@@ -5,29 +5,29 @@ import './App.css';
 const socket = io.connect('http://localhost:5000');
 
 function App() {
-  // const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [streamData, setStreamData] = useState({});
 
   useEffect(() => {
-    // setLoading(true);
+    setLoading(true);
     socket.emit('getStreamData');
     socket.on('serverStreamData', (data) => {
       setStreamData(data);
       socket.removeAllListeners();
-      // setLoading(false);
+      setLoading(false);
     });
+
+    return () => {
+      socket.close();
+    };
   }, []);
 
-  useEffect(() => {
-    // setLoading(true);
-    // socket.emit('getStreamData');
-    socket.on('serverStreamData', (data) => {
-      console.log('here');
-      setStreamData(data);
-      socket.removeAllListeners();
-      // setLoading(false);
-    });
-  }, [streamData]);
+  // useEffect(() => {
+  //   // socket.on('serverStreamData', (data) => {
+  //   //   setStreamData(data);
+  //   //   socket.removeAllListeners();
+  //   // });
+  // }, [streamData]);
 
   // const renderStations = () => {
   //   return streamData.availableStreams.map((stream) => {
@@ -47,7 +47,9 @@ function App() {
       socket.removeAllListeners();
     });
   };
-  return (
+  return loading ? (
+    <div>loading</div>
+  ) : (
     <div className='App'>
       <h1>NODEONOS</h1>
       <div id='stream-links'>

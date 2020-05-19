@@ -21,13 +21,11 @@ io.on('connection', (socket) => {
   console.log(`New client connected: ${socket.id}`);
 
   socket.on('getStreamData', () => {
-    io.sockets.emit('serverStreamData', sessionState);
+    io.emit('serverStreamData', sessionState);
   });
 
   socket.on('selectStream', (data) => {
-    setTimeout(() => {
-      sessionState.playingId = data;
-      io.sockets.emit('serverStreamData', sessionState);
-    });
+    sessionState.playingId = data;
+    io.emit('serverStreamData', sessionState);
   });
 });
