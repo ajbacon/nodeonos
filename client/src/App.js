@@ -8,11 +8,12 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [streamData, setStreamData] = useState({});
 
+  // retrieve server session data on mount
   useEffect(() => {
     setLoading(true);
     socket.emit('getStreamData');
     socket.on('serverStreamData', (data) => {
-      setStreamData(data);
+      setStreamData(JSON.parse(data));
       socket.removeAllListeners();
       setLoading(false);
     });
@@ -22,46 +23,68 @@ function App() {
     };
   }, []);
 
-  // useEffect(() => {
-  //   // socket.on('serverStreamData', (data) => {
-  //   //   setStreamData(data);
-  //   //   socket.removeAllListeners();
-  //   // });
-  // }, [streamData]);
+  const renderStreamLinks = () => {
+    return streamData.availableStreams.map((stream) => {
+      return (
+        <button key={stream._id} id={stream._id} onClick={playlistHandler}>
+          {stream.name}
+        </button>
+      );
+    });
+  };
 
-  // const renderStations = () => {
-  //   return streamData.availableStreams.map((stream) => {
-  //     return (
-  //       <button id={stream._id} onClick={playlistHandler}>
-  //         {stream.name}
-  //       </button>
-  //     );
-  //   });
-  // };
+  const renderCurrentStream = () => {
+    if (streamData.playingId === null) {
+      return 'No music selected';
+    }
+    console.log(streamData);
+    return streamData.availableStreams.find(
+      (elm) => elm._id === streamData.playingId
+    ).name;
+  };
+
+  const renderPlayButton = () => {
+    if (streamData.playingId === null) {
+      return (
+        <img
+          onClick={playHandler}
+          alt='play-grey'
+          src={'play-dark-grey-64.png'}
+        ></img>
+      );
+    } else if (streamData.isPlaying) {
+      return <img onClick={playHandler} alt='pause' src={'pause-64.png'}></img>;
+    }
+    return <img onClick={playHandler} alt='play' src={'play-64.png'}></img>;
+  };
 
   const playlistHandler = (e) => {
     e.preventDefault();
     socket.emit('selectStream', e.target.id);
+  };
+
+  const playHandler = () => {
+    if (streamData.playingId === null) return;
+    socket.emit('play-pause', 'switch');
+  };
+
+  // update when streamData is modified
+  useEffect(() => {
     socket.on('serverStreamData', (data) => {
-      setStreamData(data);
+      setStreamData(JSON.parse(data));
       socket.removeAllListeners();
     });
-  };
+  }, [streamData]);
+
   return loading ? (
     <div>loading</div>
   ) : (
     <div className='App'>
       <h1>NODEONOS</h1>
-      <div id='stream-links'>
-        <button id={0} onClick={playlistHandler}>
-          stream1
-        </button>
-        <button id={1} onClick={playlistHandler}>
-          stream2
-        </button>
-      </div>
-      <img src={'assets/awesome-80s.jpg'} alt={'pic'} height='400'></img>
-      <p>{streamData.playingId}</p>
+      <div id='stream-links'>{renderStreamLinks()}</div>
+      <img src={'assets/eagle-classic.jpg'} alt={'pic'} height='400'></img>
+      <p>{renderCurrentStream()}</p>
+      <div>{renderPlayButton()}</div>
     </div>
   );
 }
