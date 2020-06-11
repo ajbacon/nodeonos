@@ -12,7 +12,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
 
+.stream-image {
+  margin: 20px auto 20px auto;
+  height: 400px;
 }
 
 

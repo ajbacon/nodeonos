@@ -45,7 +45,11 @@ function App() {
       (elm) => elm._id === streamData.playingId
     ).image;
 
-    return <img src={`assets/${image}`} alt={'pic'} height='400'></img>;
+    return (
+      <div className='stream-image'>
+        <img src={`assets/${image}`} alt={'pic'} height='400'></img>
+      </div>
+    );
   };
 
   const renderCurrentStream = () => {
