@@ -1,7 +1,20 @@
 .App {
   text-align: center;
   color: white;
+  align-items: center;
 }
+
+.no-selection {
+  margin: 20px auto 20px auto;
+  height: 400px;
+  width: 400px;
+  background-color: #525252;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
 
 .App-logo {
   height: 40vmin;

@@ -33,6 +33,21 @@ function App() {
     });
   };
 
+  const renderImage = () => {
+    if (streamData.playingId === null) {
+      return (
+        <div className='no-selection'>
+          <img src={'assets/no_sel.png'} alt={'pic'} height='200'></img>
+        </div>
+      );
+    }
+    const image = streamData.availableStreams.find(
+      (elm) => elm._id === streamData.playingId
+    ).image;
+
+    return <img src={`assets/${image}`} alt={'pic'} height='400'></img>;
+  };
+
   const renderCurrentStream = () => {
     if (streamData.playingId === null) {
       return 'No music selected';
@@ -82,7 +97,8 @@ function App() {
     <div className='App'>
       <h1>NODEONOS</h1>
       <div id='stream-links'>{renderStreamLinks()}</div>
-      <img src={'assets/eagle-classic.jpg'} alt={'pic'} height='400'></img>
+      <div>{renderImage()}</div>
+      {/* <img src={'assets/no_sel.png'} alt={'pic'} height='400'></img> */}
       <p>{renderCurrentStream()}</p>
       <div>{renderPlayButton()}</div>
     </div>
